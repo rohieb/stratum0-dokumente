@@ -34,7 +34,8 @@ clean:
 		$(addsuffix .fdb_latexmk,$(JOBNAMES)) \
 		$(addsuffix .fls,$(JOBNAMES)) \
 		$(addsuffix .log,$(JOBNAMES)) \
-		$(addsuffix .out,$(JOBNAMES))
+		$(addsuffix .out,$(JOBNAMES)) \
+		vc.tex
 
 mrproper: clean
 	rm -f $(addsuffix .pdf,$(JOBNAMES))
@@ -42,7 +43,10 @@ mrproper: clean
 preview:
 	$(latexmk) -pvc $(LATESTJOB).tex
 
-%.pdf: %.tex
+vc.tex: .git/index .git/HEAD
+	cd scripts; sh ./vc && mv vc.tex ..
+
+%.pdf: %.tex vc.tex
 	$(latexmk) $(if $(PVC),-pvc,-pvc-) "$<"
 
 # vim: ft=make
